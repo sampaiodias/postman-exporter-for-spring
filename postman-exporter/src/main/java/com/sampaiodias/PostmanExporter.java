@@ -1,0 +1,119 @@
+package com.sampaiodias;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sampaiodias.collectionmodel.*;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class PostmanExporter {
+    public String export(String collectionName, String baseUrl, String packageFullName) throws JsonProcessingException {
+        Reflections reflections = new Reflections(packageFullName, new MethodAnnotationsScanner());
+        Set<Method> methods = new HashSet<>();
+        methods.addAll(reflections.getMethodsAnnotatedWith(GetMapping.class));
+        methods.addAll(reflections.getMethodsAnnotatedWith(DeleteMapping.class));
+        methods.addAll(reflections.getMethodsAnnotatedWith(PatchMapping.class));
+        methods.addAll(reflections.getMethodsAnnotatedWith(PostMapping.class));
+        methods.addAll(reflections.getMethodsAnnotatedWith(PutMapping.class));
+        methods.addAll(reflections.getMethodsAnnotatedWith(RequestMapping.class));
+
+        PostmanCollection collection = new PostmanCollection(collectionName);
+        for (Method method : methods) {
+            CollectionFolder folder = collection.getOrCreateFolder(method.getDeclaringClass().getSimpleName());
+            RequestUrl url = new RequestUrl(getRawUrl(baseUrl, method), getQuery(method));
+            folder.getRequests().add(new CollectionRequestItem(method.getName(),
+                    new RequestData(getMappingString(method), url, method)));
+        }
+        collection.sortData();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        return mapper.writeValueAsString(collection);
+    }
+
+    private Map<String, String> getQuery(Method method) {
+        Parameter[] parameters = method.getParameters();
+
+        if (parameters.length == 0) {
+            return null;
+        }
+
+        Map<String, String> query = new HashMap<>();
+        for (Parameter parameter : parameters) {
+            String parameterName = parameter.isNamePresent() ? parameter.getName() : "";
+            RequestParam annotation = parameter.getAnnotation(RequestParam.class);
+            if (annotation != null) {
+                query.put(annotation.value().equals("") ? parameterName : annotation.value(), "");
+            }
+        }
+        return query;
+    }
+
+    private String getRawUrl(String baseUrl, Method method) {
+        String prefix = baseUrl + (baseUrl.endsWith("/") ? "" : "/");
+
+        GetMapping getMapping = method.getAnnotation(GetMapping.class);
+        if (getMapping != null) {
+            return prefix + (getMapping.value().length > 0 ? normalizePathUrl(getMapping.value()[0]) : "");
+        }
+        PostMapping postMapping = method.getAnnotation(PostMapping.class);
+        if (postMapping != null) {
+            return prefix + (postMapping.value().length > 0 ? normalizePathUrl(postMapping.value()[0]) : "");
+        }
+        DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
+        if (deleteMapping != null) {
+            return prefix + (deleteMapping.value().length > 0 ? normalizePathUrl(deleteMapping.value()[0]) : "");
+        }
+        PutMapping putMapping = method.getAnnotation(PutMapping.class);
+        if (putMapping != null) {
+            return prefix + (putMapping.value().length > 0 ? normalizePathUrl(putMapping.value()[0]) : "");
+        }
+        PatchMapping patchMapping = method.getAnnotation(PatchMapping.class);
+        if (patchMapping != null) {
+            return baseUrl + "/" + (patchMapping.value().length > 0 ? normalizePathUrl(patchMapping.value()[0]) : "");
+        }
+        RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+        if (requestMapping != null) {
+            return baseUrl + "/" + (requestMapping.value().length > 0 ? normalizePathUrl(requestMapping.value()[0]) : "");
+        }
+
+        return baseUrl;
+    }
+
+    private String normalizePathUrl(String path) {
+        return !path.startsWith("/") ? path : path.substring(1);
+    }
+
+    private String getMappingString(Method method) {
+        if (method.getAnnotation(GetMapping.class) != null) {
+            return "GET";
+        }
+        if (method.getAnnotation(PostMapping.class) != null) {
+            return "POST";
+        }
+        if (method.getAnnotation(DeleteMapping.class) != null) {
+            return "DELETE";
+        }
+        if (method.getAnnotation(PutMapping.class) != null) {
+            return "PUT";
+        }
+        if (method.getAnnotation(PatchMapping.class) != null) {
+            return "PATCH";
+        }
+        RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+        if (requestMapping != null && requestMapping.method().length > 0) {
+            return requestMapping.method()[0].toString();
+        }
+        return "GET";
+    }
+}
