@@ -16,7 +16,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This is the class that can export your Spring endpoints into a Postman Collection.
+ */
 public class PostmanExporter {
+
+    /**
+     * Generates a json String based on all endpoints available on your project. You can you this String to import a new
+     * collection on Postman.
+     *
+     * @param collectionName The name that will be displayed on your Postman collection.
+     * @param baseUrl The base URL of your application (for example: localhost:8080 or https://yourdomain.com).
+     * @param packageFullName The complete package name of the files that will be inspected to find your endpoints.
+     * @return The Postman Collection json string.
+     * @throws JsonProcessingException If, for some reason, the collection fails to be serialized into a json.
+     */
     public String export(String collectionName, String baseUrl, String packageFullName) throws JsonProcessingException {
         Reflections reflections = new Reflections(packageFullName, new MethodAnnotationsScanner());
         Set<Method> methods = new HashSet<>();
