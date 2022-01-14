@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/badge/maven%20central-0.2.0-brightgreen)](https://search.maven.org/artifact/io.github.sampaiodias/postman-exporter)
+[![Maven Central](https://img.shields.io/badge/maven%20central-0.3.0-brightgreen)](https://search.maven.org/artifact/io.github.sampaiodias/postman-exporter)
 [![MIT License](https://img.shields.io/github/license/sampaiodias/postman-exporter-for-spring)](https://github.com/sampaiodias/postman-exporter-for-spring/blob/main/LICENSE.md)
 
 # Postman Exporter for Spring
@@ -23,7 +23,7 @@ To use this library on your project:
 <dependency>
     <groupId>io.github.sampaiodias</groupId>
     <artifactId>postman-exporter</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
