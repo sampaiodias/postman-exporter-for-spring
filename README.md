@@ -12,6 +12,15 @@ PostmanExporter exporter = new PostmanExporter();
 String json = exporter.export("Collection Name", "localhost:8080", "com.example.package");
 ```
 
+To use this library on your project:
+```java
+<dependency>
+    <groupId>io.github.sampaiodias</groupId>
+    <artifactId>postman-exporter</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
 ## Features
 - Supportes all Mapping annotations: @RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping.
 - Generates Postman requests configured with request methods (GET, POST, etc.), Params and Body. 
