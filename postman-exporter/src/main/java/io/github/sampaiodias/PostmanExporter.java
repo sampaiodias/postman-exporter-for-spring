@@ -43,6 +43,9 @@ public class PostmanExporter {
 
         PostmanCollection collection = new PostmanCollection(collectionName);
         for (Method method : methods) {
+            if (method.getAnnotation(PostmanIgnore.class) != null || method.getDeclaringClass().isAnnotationPresent(PostmanIgnore.class)) {
+                continue;
+            }
             CollectionFolder folder = collection.getOrCreateFolder(method.getDeclaringClass().getSimpleName());
             RequestUrl url = new RequestUrl(getRawUrl(baseUrl, method), getQuery(method));
             folder.getRequests().add(new CollectionRequestItem(method.getName(),
@@ -76,6 +79,12 @@ public class PostmanExporter {
     private String getRawUrl(String baseUrl, Method method) {
         String prefix = baseUrl + (baseUrl.endsWith("/") ? "" : "/");
 
+        RequestMapping controllerMapping = method.getDeclaringClass().getAnnotation(RequestMapping.class);
+        if (controllerMapping != null && controllerMapping.value().length > 0) {
+            String path = normalizePathUrl(controllerMapping.value()[0]);
+            prefix += path + (path.endsWith("/") ? "" : "/");
+        }
+
         GetMapping getMapping = method.getAnnotation(GetMapping.class);
         if (getMapping != null) {
             return prefix + (getMapping.value().length > 0 ? normalizePathUrl(getMapping.value()[0]) : "");
@@ -94,11 +103,11 @@ public class PostmanExporter {
         }
         PatchMapping patchMapping = method.getAnnotation(PatchMapping.class);
         if (patchMapping != null) {
-            return baseUrl + "/" + (patchMapping.value().length > 0 ? normalizePathUrl(patchMapping.value()[0]) : "");
+            return prefix + (patchMapping.value().length > 0 ? normalizePathUrl(patchMapping.value()[0]) : "");
         }
         RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
         if (requestMapping != null) {
-            return baseUrl + "/" + (requestMapping.value().length > 0 ? normalizePathUrl(requestMapping.value()[0]) : "");
+            return prefix + (requestMapping.value().length > 0 ? normalizePathUrl(requestMapping.value()[0]) : "");
         }
 
         return baseUrl;
