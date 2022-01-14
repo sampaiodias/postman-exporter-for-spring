@@ -25,6 +25,18 @@ public class PostmanExporter {
      * Generates a json String based on all endpoints available on your project. You can you this String to import a new
      * collection on Postman.
      *
+     * @param exportOptions Options used to change how the Collection will be exported.
+     * @return The Postman Collection json string.
+     * @throws JsonProcessingException If, for some reason, the collection fails to be serialized into a json.
+     */
+    public String export(PostmanExportOptions exportOptions) throws JsonProcessingException {
+        return export(exportOptions.getCollectionName(), exportOptions.getBaseUrl(), exportOptions.getPackageFullName(), exportOptions.getStringVariables());
+    }
+
+    /**
+     * Generates a json String based on all endpoints available on your project. You can you this String to import a new
+     * collection on Postman.
+     *
      * @param collectionName The name that will be displayed on your Postman collection.
      * @param baseUrl The base URL of your application (for example: localhost:8080 or https://yourdomain.com).
      * @param packageFullName The complete package name of the files that will be inspected to find your endpoints.
@@ -32,6 +44,10 @@ public class PostmanExporter {
      * @throws JsonProcessingException If, for some reason, the collection fails to be serialized into a json.
      */
     public String export(String collectionName, String baseUrl, String packageFullName) throws JsonProcessingException {
+        return export(collectionName, baseUrl, packageFullName, null);
+    }
+
+    private String export(String collectionName, String baseUrl, String packageFullName, Map<String, String> stringVariables) throws JsonProcessingException {
         Reflections reflections = new Reflections(packageFullName, new MethodAnnotationsScanner());
         Set<Method> methods = new HashSet<>();
         methods.addAll(reflections.getMethodsAnnotatedWith(GetMapping.class));
@@ -41,7 +57,7 @@ public class PostmanExporter {
         methods.addAll(reflections.getMethodsAnnotatedWith(PutMapping.class));
         methods.addAll(reflections.getMethodsAnnotatedWith(RequestMapping.class));
 
-        PostmanCollection collection = new PostmanCollection(collectionName);
+        PostmanCollection collection = new PostmanCollection(collectionName, stringVariables);
         for (Method method : methods) {
             if (method.getAnnotation(PostmanIgnore.class) != null || method.getDeclaringClass().isAnnotationPresent(PostmanIgnore.class)) {
                 continue;

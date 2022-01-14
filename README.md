@@ -10,11 +10,16 @@ This project is a simple Java library that can export all of your Spring endpoin
 Example:
 ```java
 PostmanExporter exporter = new PostmanExporter();
-String json = exporter.export("Collection Name", "localhost:8080", "com.example.package");
+String json = exporter.export(PostmanExportOptions.builder()
+                    .collectionName("My Collection")
+                    .packageFullName("com.example.package")
+                    .baseUrl("{{url}}")
+                    .variable("url", "localhost:8080")
+                    .build());
 ```
 
 To use this library on your project:
-```java
+```xml
 <dependency>
     <groupId>io.github.sampaiodias</groupId>
     <artifactId>postman-exporter</artifactId>
@@ -27,3 +32,4 @@ To use this library on your project:
 - Generates Postman requests configured with request methods (GET, POST, etc.), Params and Body. 
 - Groups requests into folders (one folder per class/Controller).
 - Ignores classes and methods annotated with @PostmanIgnore during exportation.
+- Supports Postman variables (such as "{{variable-name}}").

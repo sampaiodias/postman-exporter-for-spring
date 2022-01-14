@@ -29,6 +29,13 @@ public class RequestUrl {
             this.host = Arrays.asList("localhost");
             this.port = this.raw.substring(this.raw.indexOf(":") + 1, this.raw.indexOf("/"));
             this.path.addAll(Arrays.asList(this.raw.substring(this.raw.indexOf("/") + 1).split("/")));
+        } else if (this.raw.startsWith("{{")) {
+            String rawBeforeVariable = this.raw.substring(0, this.raw.lastIndexOf("}") + 1);
+            rawBeforeVariable = rawBeforeVariable.startsWith("/") ? rawBeforeVariable.substring(1) : rawBeforeVariable;
+            String rawAfterVariable = this.raw.substring(this.raw.lastIndexOf("}") + 1);
+            rawAfterVariable = rawAfterVariable.startsWith("/") ? rawAfterVariable.substring(1) : rawAfterVariable;
+            this.host = Arrays.asList(rawBeforeVariable);
+            this.path.addAll(Arrays.asList(rawAfterVariable.split("/")));
         }
 
         if (query != null) {
