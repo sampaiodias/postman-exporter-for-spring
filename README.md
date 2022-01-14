@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/badge/maven%20central-0.2.0-brightgreen)](https://search.maven.org/artifact/io.github.sampaiodias/postman-exporter)
+[![Maven Central](https://img.shields.io/badge/maven%20central-0.3.0-brightgreen)](https://search.maven.org/artifact/io.github.sampaiodias/postman-exporter)
 [![MIT License](https://img.shields.io/github/license/sampaiodias/postman-exporter-for-spring)](https://github.com/sampaiodias/postman-exporter-for-spring/blob/main/LICENSE.md)
 
 # Postman Exporter for Spring
@@ -10,15 +10,20 @@ This project is a simple Java library that can export all of your Spring endpoin
 Example:
 ```java
 PostmanExporter exporter = new PostmanExporter();
-String json = exporter.export("Collection Name", "localhost:8080", "com.example.package");
+String json = exporter.export(PostmanExportOptions.builder()
+                    .collectionName("My Collection")
+                    .packageFullName("com.example.package")
+                    .baseUrl("{{url}}")
+                    .variable("url", "localhost:8080")
+                    .build());
 ```
 
 To use this library on your project:
-```java
+```xml
 <dependency>
     <groupId>io.github.sampaiodias</groupId>
     <artifactId>postman-exporter</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
@@ -26,4 +31,6 @@ To use this library on your project:
 - Supports all Mapping annotations: @RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping.
 - Generates Postman requests configured with request methods (GET, POST, etc.), Params and Body. 
 - Groups requests into folders (one folder per class/Controller).
+- Supports Postman variables (such as "{{variable-name}}").
 - Ignores classes and methods annotated with @PostmanIgnore during exportation.
+- Renames requests and folders easily with the @PostmanName annotation.
