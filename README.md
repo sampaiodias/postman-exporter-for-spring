@@ -1,4 +1,5 @@
 [![Maven Central](https://img.shields.io/badge/maven%20central-0.2.0-brightgreen)](https://search.maven.org/artifact/io.github.sampaiodias/postman-exporter)
+[![MIT License](https://img.shields.io/github/license/sampaiodias/postman-exporter-for-spring)](https://github.com/sampaiodias/postman-exporter-for-spring/blob/main/LICENSE.md)
 
 # Postman Exporter for Spring
 
