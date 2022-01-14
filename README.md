@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/badge/maven%20central-0.2.0-brightgreen)](https://maven-badges.herokuapp.com/maven-central/io.github.sampaiodias/postman-exporter)
+[![Maven Central](https://img.shields.io/badge/maven%20central-0.2.0-brightgreen)](https://search.maven.org/artifact/io.github.sampaiodias/postman-exporter)
 
 # Postman Exporter for Spring
 
