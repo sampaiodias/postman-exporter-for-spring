@@ -8,6 +8,33 @@
     <artifactId>postman-exporter</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>Postman Exporter for Spring</name>
+    <description>This project is a simple Java library that can export all of your Spring endpoints into a
+        Postman Collection json, which you can import on Postman.</description>
+    <url>https://github.com/sampaiodias/postman-exporter-for-spring</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Lucas Sampaio Dias</name>
+            <email>lucassampaiodias@gmail.com</email>
+            <organization>Lucas Sampaio Dias</organization>
+            <organizationUrl>http://www.github.com/sampaiodias</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/sampaiodias/postman-exporter-for-spring.git</connection>
+        <developerConnection>scm:git:ssh://github.com:simpligility/postman-exporter-for-spring.git</developerConnection>
+        <url>http://github.com/sampaiodias/postman-exporter-for-spring/tree/main/postman-exporter</url>
+    </scm>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
