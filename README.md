@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.sampaiodias/postman-exporter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.sampaiodias/postman-exporter)
+
 # Postman Exporter for Spring
 
 This project is a simple Java library that can export all of your Spring endpoints into a Postman Collection json, which you can import on Postman. This library is fairly new, so feedback is greatly appreciated.
