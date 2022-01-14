@@ -1,4 +1,4 @@
-package com.github.sampaiodias.collectionmodel;
+package io.github.sampaiodias.collectionmodel;
 
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.github.sampaiodias.sampleapi;
+package io.github.sampaiodias.sampleapi;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.github.sampaiodias.sampleapi;
+package io.github.sampaiodias.sampleapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

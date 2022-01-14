@@ -1,7 +1,7 @@
-package com.github.sampaiodias.sampleapi;
+package io.github.sampaiodias.sampleapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.sampaiodias.PostmanExporter;
+import io.github.sampaiodias.PostmanExporter;
 
 public class Exporter {
 
@@ -12,7 +12,7 @@ public class Exporter {
     public static String export() {
         PostmanExporter exporter = new PostmanExporter();
         try {
-            return exporter.export("My Collection", "localhost:8080", "com.github.sampaiodias.sampleapi");
+            return exporter.export("My Collection", "localhost:8080", "io.github.sampaiodias.sampleapi");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

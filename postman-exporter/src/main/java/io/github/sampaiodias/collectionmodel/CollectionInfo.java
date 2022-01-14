@@ -1,4 +1,4 @@
-package com.github.sampaiodias.collectionmodel;
+package io.github.sampaiodias.collectionmodel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

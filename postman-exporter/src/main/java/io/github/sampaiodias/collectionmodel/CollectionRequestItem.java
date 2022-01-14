@@ -1,4 +1,4 @@
-package com.github.sampaiodias.collectionmodel;
+package io.github.sampaiodias.collectionmodel;
 
 import java.util.ArrayList;
 import java.util.List;
