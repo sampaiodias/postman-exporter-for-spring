@@ -1,4 +1,4 @@
-package com.sampaiodias.collectionmodel;
+package com.github.sampaiodias.collectionmodel;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,4 +1,4 @@
-package com.sampaiodias.sampleapi;
+package com.github.sampaiodias.sampleapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

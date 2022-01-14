@@ -1,4 +1,4 @@
-package com.sampaiodias.collectionmodel;
+package com.github.sampaiodias.collectionmodel;
 
 import org.springframework.http.MediaType;
 

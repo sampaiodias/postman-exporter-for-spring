@@ -1,4 +1,4 @@
-package com.sampaiodias.collectionmodel;
+package com.github.sampaiodias.collectionmodel;
 
 public class CollectionQuery {
     private String key;

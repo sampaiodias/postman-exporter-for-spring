@@ -1,4 +1,4 @@
-package com.sampaiodias.sampleapi;
+package com.github.sampaiodias.sampleapi;
 
 import org.springframework.web.bind.annotation.*;
 
