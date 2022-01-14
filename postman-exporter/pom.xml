@@ -6,7 +6,7 @@
 
     <groupId>io.github.sampaiodias</groupId>
     <artifactId>postman-exporter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
 
     <name>Postman Exporter for Spring</name>
     <description>This project is a simple Java library that can export all of your Spring endpoints into a
