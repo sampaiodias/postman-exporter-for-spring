@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.sampaiodias.annotations.PostmanIgnore;
+import io.github.sampaiodias.annotations.PostmanName;
 import io.github.sampaiodias.collectionmodel.*;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -62,9 +64,16 @@ public class PostmanExporter {
             if (method.getAnnotation(PostmanIgnore.class) != null || method.getDeclaringClass().isAnnotationPresent(PostmanIgnore.class)) {
                 continue;
             }
-            CollectionFolder folder = collection.getOrCreateFolder(method.getDeclaringClass().getSimpleName());
+
+            PostmanName classPostmanName = method.getDeclaringClass().getAnnotation(PostmanName.class);
+            String folderName = classPostmanName != null ? classPostmanName.value() : method.getDeclaringClass().getSimpleName();
+            CollectionFolder folder = collection.getOrCreateFolder(folderName);
+
+            PostmanName methodPostmanName = method.getAnnotation(PostmanName.class);
+            String requestName = methodPostmanName != null ? methodPostmanName.value() : method.getName();
+
             RequestUrl url = new RequestUrl(getRawUrl(baseUrl, method), getQuery(method));
-            folder.getRequests().add(new CollectionRequestItem(method.getName(),
+            folder.getRequests().add(new CollectionRequestItem(requestName,
                     new RequestData(getMappingString(method), url, method)));
         }
         collection.sortData();

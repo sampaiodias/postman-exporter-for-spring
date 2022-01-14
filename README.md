@@ -31,5 +31,6 @@ To use this library on your project:
 - Supports all Mapping annotations: @RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping.
 - Generates Postman requests configured with request methods (GET, POST, etc.), Params and Body. 
 - Groups requests into folders (one folder per class/Controller).
-- Ignores classes and methods annotated with @PostmanIgnore during exportation.
 - Supports Postman variables (such as "{{variable-name}}").
+- Ignores classes and methods annotated with @PostmanIgnore during exportation.
+- Renames requests and folders easily with the @PostmanName annotation.

@@ -1,4 +1,4 @@
-package io.github.sampaiodias;
+package io.github.sampaiodias.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,6 +1,6 @@
 package io.github.sampaiodias.sampleapi;
 
-import io.github.sampaiodias.PostmanIgnore;
+import io.github.sampaiodias.annotations.PostmanIgnore;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
