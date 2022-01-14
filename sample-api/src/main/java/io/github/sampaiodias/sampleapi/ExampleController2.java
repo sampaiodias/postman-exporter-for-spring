@@ -1,5 +1,6 @@
 package io.github.sampaiodias.sampleapi;
 
+import io.github.sampaiodias.PostmanIgnore;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,12 @@ public class ExampleController2 {
 
     @RequestMapping(value = "/request", method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE)
     public String simplePostRequestMappingWithBody(@RequestBody String body) {
+        return "Hello World";
+    }
+
+    @PostmanIgnore
+    @GetMapping
+    public String ignoredGet() {
         return "Hello World";
     }
 }

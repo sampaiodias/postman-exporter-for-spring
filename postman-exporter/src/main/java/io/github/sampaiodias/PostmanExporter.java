@@ -43,6 +43,9 @@ public class PostmanExporter {
 
         PostmanCollection collection = new PostmanCollection(collectionName);
         for (Method method : methods) {
+            if (method.getAnnotation(PostmanIgnore.class) != null || method.getDeclaringClass().isAnnotationPresent(PostmanIgnore.class)) {
+                continue;
+            }
             CollectionFolder folder = collection.getOrCreateFolder(method.getDeclaringClass().getSimpleName());
             RequestUrl url = new RequestUrl(getRawUrl(baseUrl, method), getQuery(method));
             folder.getRequests().add(new CollectionRequestItem(method.getName(),
