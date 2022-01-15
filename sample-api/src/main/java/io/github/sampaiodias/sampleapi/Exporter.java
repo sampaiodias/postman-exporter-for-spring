@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.sampaiodias.PostmanExportOptions;
 import io.github.sampaiodias.PostmanExporter;
 
+import java.util.Arrays;
+
 public class Exporter {
 
     public static void main(String[] args) {
@@ -18,6 +20,15 @@ public class Exporter {
                     .packageFullName("io.github.sampaiodias.sampleapi")
                     .baseUrl("{{url}}")
                     .variable("url", "localhost:8080")
+                    .preRequestScript(Arrays.asList("pm.test(\"Status code is 200\", function () {\n" +
+                                    "    pm.response.to.have.status(200);\n" +
+                                    "});"))
+                    .testScript("Custom Named Folder", Arrays.asList("pm.test(\"Status code is 200\", function () {\n" +
+                            "    pm.response.to.have.status(200);\n" +
+                            "});"))
+                    .testScript("simpleGet", Arrays.asList("pm.test(\"Status code is 200\", function () {\n" +
+                            "    pm.response.to.have.status(200);\n" +
+                            "});"))
                     .build());
         } catch (JsonProcessingException e) {
             e.printStackTrace();

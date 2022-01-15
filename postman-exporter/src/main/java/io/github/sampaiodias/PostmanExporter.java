@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This is the class that can export your Spring endpoints into a Postman Collection.
@@ -32,7 +29,8 @@ public class PostmanExporter {
      * @throws JsonProcessingException If, for some reason, the collection fails to be serialized into a json.
      */
     public String export(PostmanExportOptions exportOptions) throws JsonProcessingException {
-        return export(exportOptions.getCollectionName(), exportOptions.getBaseUrl(), exportOptions.getPackageFullName(), exportOptions.getStringVariables());
+        return export(exportOptions.getCollectionName(), exportOptions.getBaseUrl(), exportOptions.getPackageFullName(),
+                exportOptions.getStringVariables(), exportOptions.getPreRequestScriptData(), exportOptions.getTestScriptData());
     }
 
     /**
@@ -46,10 +44,11 @@ public class PostmanExporter {
      * @throws JsonProcessingException If, for some reason, the collection fails to be serialized into a json.
      */
     public String export(String collectionName, String baseUrl, String packageFullName) throws JsonProcessingException {
-        return export(collectionName, baseUrl, packageFullName, null);
+        return export(collectionName, baseUrl, packageFullName, null, null, null);
     }
 
-    private String export(String collectionName, String baseUrl, String packageFullName, Map<String, String> stringVariables) throws JsonProcessingException {
+    private String export(String collectionName, String baseUrl, String packageFullName, Map<String, String> stringVariables,
+                          List<RequestScriptData> preRequestScriptData, List<RequestScriptData> testScriptData) throws JsonProcessingException {
         Reflections reflections = new Reflections(packageFullName, new MethodAnnotationsScanner());
         Set<Method> methods = new HashSet<>();
         methods.addAll(reflections.getMethodsAnnotatedWith(GetMapping.class));
@@ -73,14 +72,49 @@ public class PostmanExporter {
             String requestName = methodPostmanName != null ? methodPostmanName.value() : method.getName();
 
             RequestUrl url = new RequestUrl(getRawUrl(baseUrl, method), getQuery(method));
+            List<RequestEvent> events = getRequestEvents(preRequestScriptData, testScriptData, folderName, requestName);
+
             folder.getRequests().add(new CollectionRequestItem(requestName,
-                    new RequestData(getMappingString(method), url, method)));
+                    new RequestData(getMappingString(method), url, method), events));
         }
         collection.sortData();
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         return mapper.writeValueAsString(collection);
+    }
+
+    private List<RequestEvent> getRequestEvents(List<RequestScriptData> preRequestScriptData, List<RequestScriptData> testScriptData, String folderName, String requestName) {
+        List<String> preRequestScripts = getScripts(preRequestScriptData, folderName, requestName);
+        List<String> testScripts = getScripts(testScriptData, folderName, requestName);
+        List<RequestEvent> events = null;
+        if (preRequestScripts != null) {
+            events = new ArrayList<>();
+            events.add(new RequestEvent(RequestEvent.RequestScriptType.PRE_REQUEST, preRequestScripts));
+        }
+        if (testScripts != null) {
+            if (events == null) {
+                events = new ArrayList<>();
+            }
+            events.add(new RequestEvent(RequestEvent.RequestScriptType.TEST, testScripts));
+        }
+        return events;
+    }
+
+    private List<String> getScripts(List<RequestScriptData> dataList, String folderName, String requestName) {
+        List<String> scripts = null;
+        if (dataList != null && dataList.size() > 0) {
+            for (RequestScriptData scriptData : dataList) {
+                if (scriptData.getName() == null || Objects.equals(scriptData.getName(), "")
+                        || scriptData.getName().equals(requestName) || scriptData.getName().equals(folderName)) {
+                    if (scripts == null) {
+                        scripts = new ArrayList<>();
+                    }
+                    scripts.addAll(scriptData.getScript());
+                }
+            }
+        }
+        return scripts;
     }
 
     private Map<String, String> getQuery(Method method) {

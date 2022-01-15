@@ -1,19 +1,26 @@
 package io.github.sampaiodias;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.github.sampaiodias.collectionmodel.RequestScriptData;
+
+import java.util.*;
 
 public class PostmanExportOptions {
     private String collectionName;
     private String baseUrl;
     private String packageFullName;
     private Map<String, String> stringVariables;
+    private List<RequestScriptData> preRequestScriptData;
+    private List<RequestScriptData> testScriptData;
 
-    PostmanExportOptions(String collectionName, String baseUrl, String packageFullName, Map<String, String> stringVariables) {
+    PostmanExportOptions(String collectionName, String baseUrl, String packageFullName,
+                         Map<String, String> stringVariables, List<RequestScriptData> preRequestScriptData,
+                         List<RequestScriptData> testScriptData) {
         this.collectionName = collectionName;
         this.baseUrl = baseUrl;
         this.packageFullName = packageFullName;
         this.stringVariables = stringVariables;
+        this.preRequestScriptData = preRequestScriptData;
+        this.testScriptData = testScriptData;
     }
 
     /**
@@ -48,6 +55,22 @@ public class PostmanExportOptions {
         return stringVariables;
     }
 
+    /**
+     * The data that defines Pre-request scripts to be added to requests.
+     * @return
+     */
+    public List<RequestScriptData> getPreRequestScriptData() {
+        return preRequestScriptData;
+    }
+
+    /**
+     * The data that defines Test scripts to be added to requests.
+     * @return
+     */
+    public List<RequestScriptData> getTestScriptData() {
+        return testScriptData;
+    }
+
     public static PostmanExportOptionsBuilder builder() {
         return new PostmanExportOptionsBuilder();
     }
@@ -57,6 +80,8 @@ public class PostmanExportOptions {
         private String baseUrl = "{{url}}";
         private String packageFullName;
         private Map<String, String> stringVariables;
+        private List<RequestScriptData> preRequestScriptData;
+        private List<RequestScriptData> testScriptData;
 
         PostmanExportOptionsBuilder() {
 
@@ -73,7 +98,8 @@ public class PostmanExportOptions {
         }
 
         /**
-         * The base URL of your application (for example: localhost:8080, or https://yourdomain.com, or {{url}}).
+         * The base URL of your application. For example: {{url}}, or localhost:8080, or https://yourdomain.com). Using
+         * a Postman variable (like {{url}}) is the recommended way.
          * @param baseUrl
          * @return
          */
@@ -106,8 +132,56 @@ public class PostmanExportOptions {
             return this;
         }
 
+        /**
+         * Add a Pre-request script that will be added to ALL Postman requests exported.
+         * @param scriptLines Scripts that will be executed by the request. You can add one script line per list element.
+         * @return
+         */
+        public PostmanExportOptionsBuilder preRequestScript(List<String> scriptLines) {
+            return preRequestScript(null, scriptLines);
+        }
+
+        /**
+         * Add a Test script that will be added to ALL Postman requests exported.
+         * @param scriptLines Scripts that will be executed by the request. You can add one script line per list element.
+         * @return
+         */
+        public PostmanExportOptionsBuilder testScript(List<String> scriptLines) {
+            return testScript(null, scriptLines);
+        }
+
+        /**
+         * Add a Pre-request script that will be added to Postman requests exported that have the name specified, or
+         * requests inside a folder with the specified name.
+         * @param name The name of the request or folder
+         * @param scriptLines Scripts that will be executed by the request. You can add one script line per list element.
+         * @return
+         */
+        public PostmanExportOptionsBuilder preRequestScript(String name, List<String> scriptLines) {
+            if (this.preRequestScriptData == null) {
+                this.preRequestScriptData = new ArrayList<>();
+            }
+            this.preRequestScriptData.add(new RequestScriptData(name, scriptLines));
+            return this;
+        }
+
+        /**
+         * Add a Test script that will be added to Postman requests exported that have the name specified, or
+         * requests inside a folder with the specified name.
+         * @param name The name of the request or folder.
+         * @param scriptLines Scripts that will be executed by the request. You can add one script line per list element.
+         * @return
+         */
+        public PostmanExportOptionsBuilder testScript(String name, List<String> scriptLines) {
+            if (this.testScriptData == null) {
+                this.testScriptData = new ArrayList<>();
+            }
+            this.testScriptData.add(new RequestScriptData(name, scriptLines));
+            return this;
+        }
+
         public PostmanExportOptions build() {
-            return new PostmanExportOptions(collectionName, baseUrl, packageFullName, stringVariables);
+            return new PostmanExportOptions(collectionName, baseUrl, packageFullName, stringVariables, preRequestScriptData, testScriptData);
         }
     }
 }
